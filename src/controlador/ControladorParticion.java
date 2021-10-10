@@ -21,6 +21,7 @@ public class ControladorParticion implements ActionListener {
     private Vista view;
     private Paginacion modelPaginacion;
     private Segmentacion segmentacion;
+
     DefaultListModel ListaProcesos = new DefaultListModel();
     DefaultListModel ListaProcesosAct = new DefaultListModel();
 
@@ -187,6 +188,15 @@ public class ControladorParticion implements ActionListener {
                     break;
                 case 4:
                     System.out.println("Proceso de Paginación");
+                    ProcesoPaginacion procesoPaginacion = (ProcesoPaginacion) ListaProcesos.getElementAt(index);
+                    ProcesoPaginacion process_loaded = modelPaginacion.agregarProceso(procesoPaginacion);
+                    int size_pag = Integer.parseInt(view.page_size.getText());
+                    flag = modelPaginacion.Agregar_PPAG(process_loaded.getName(), process_loaded.getSize(), size_pag);
+                    if (flag == false) {
+                        JOptionPane.showMessageDialog(null, "Error de paginacion - Memoria Insuficiente");
+                    } else {
+                        cargarActivosPag();
+                    }
                     break;
             }
         }
@@ -212,6 +222,7 @@ public void cargarProcesos() {
             ListaProcesos.addElement(new ProcesoPaginacion("IntelliJ", 1048576 * 3));
             ListaProcesos.addElement(new ProcesoPaginacion("uTorrent", 1048576 * 2));
             ListaProcesos.addElement(new ProcesoPaginacion("Sublime Text", 524288));
+            ListaProcesos.addElement(new ProcesoPaginacion("Android Studio", 6291456));
         }
     }
 
@@ -231,6 +242,15 @@ public void cargarProcesos() {
             ListaProcesosAct.addElement(item);
         });
         dibujarMemoria();
+    }
+
+    public void cargarActivosPag() {
+        view.jList2.setModel(ListaProcesosAct);
+        ListaProcesosAct.clear();
+        for (int i = 0; i < modelPaginacion.getArray().size(); i++) {
+            ListaProcesosAct.addElement(modelPaginacion.getArray().get(i));
+        }
+        dibujarProcesos();
     }
 
     public void dibujarProcesos() {
