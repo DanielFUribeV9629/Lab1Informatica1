@@ -57,9 +57,21 @@ public class ControladorParticion implements ActionListener {
             view.MejorAjuste.setEnabled(false);
             view.PeorAjuste.setEnabled(false);
             view.PrimerAjuste.setEnabled(false);
+            
+            if (view.PEF_npar.getText()!="" && tab==0){
+                int cantidad = Integer.parseInt(view.PEF_npar.getText());
+                modelPaginacion.Init_PEF(cantidad);
+                
+            }
+            
+            
             cargarProcesos();
         }
         if (source.getText() == "DETENER") {
+            System.out.println("Entra en Detener");
+            if (view.jTabbedPane2.getSelectedIndex() == 0 || view.jTabbedPane2.getSelectedIndex() == 1){
+                limpiaMemoria();
+            }
             view.jTabbedPane2.setEnabled(true);
             view.IniciarModelo.setEnabled(true);
             view.DetenerModelo.setEnabled(false);
@@ -77,13 +89,19 @@ public class ControladorParticion implements ActionListener {
             if (view.jTabbedPane2.getSelectedIndex() == 3) {
                 segmentacion.limpiarProcesos();
             }
+            
         }
         if (source.getText() == "Cancelar Proceso") {
+            System.out.println("Entra en Cancelar Proceso");
             int index2 = view.jList2.getSelectedIndex();
             switch (tab) {
                 case 0:
+                    modelPaginacion.quitPEF(index2);
+                    cargarActivos();                    
                     break;
                 case 1:
+                    modelPaginacion.quitPEV(index2);
+                    cargarActivos();
                     break;
                 case 2:
                     break;
@@ -100,8 +118,6 @@ public class ControladorParticion implements ActionListener {
         if (source.getText() == "Elegir Proceso") {
             //SE AGREGA EL PROCESO SELECCIONADO
             int index = view.jList1.getSelectedIndex();
-            
-            
             String ajuste = "";
             boolean flag;
 
@@ -334,5 +350,27 @@ public void cargarProcesos() {
 
         lienzo.drawImage(dobleBuffer, 0, 0, papel);
     }
+    
+    public void limpiaMemoria() {
+        System.out.println("---Limpia la memoria----");
+        Canvas papel = view.canvas1;
+        Graphics lienzo = papel.getGraphics();
+        BufferedImage dobleBuffer = new BufferedImage(papel.getWidth(), papel.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics lapiz = dobleBuffer.getGraphics();
+        lapiz.clearRect(0, 0, papel.getWidth(), papel.getHeight());
+        lienzo.drawImage(dobleBuffer, 0, 0, papel);
+        int canvaW = papel.getWidth();
+        int canvaH = papel.getHeight();
+        //Pinta Memoria
+        lapiz.setColor(Color.GREEN);
+        lapiz.fillRect(0, 0, canvaW, canvaH);
+        lapiz.drawRect(0, 0, canvaW, canvaH);
+
+        lienzo.drawImage(dobleBuffer, 0, 0, papel);
+        
+        
+    }
+    
+    
 
 }

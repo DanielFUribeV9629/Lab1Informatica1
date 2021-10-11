@@ -9,6 +9,7 @@ public class ProcesoPaginacion {
         private int byteAddress2;
         private String strAddress1;
         private String strAddress2;
+        private int indice;
         
         //METODO CONSTRUCTOR
         public ProcesoPaginacion(String newName, int newSize)
@@ -30,10 +31,19 @@ public class ProcesoPaginacion {
             strAddress2 = ConversionHex(byteAddress2);
         }
         
+        public void setIndice(int newIndice){
+            indice=newIndice;
+        }
+        
+        
         //METODOS GET
         public int getSize()
         {
             return size;
+        }
+        public int getIndice()
+        {
+            return indice;
         }
         public String getName()
         {

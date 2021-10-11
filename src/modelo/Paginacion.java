@@ -12,27 +12,56 @@ public class Paginacion {
         {12582916, 14680068, 2097152, 0},
         {14680069, 15728645, 1048576, 0},
         {15728646, 16777222, 1048576, 0}};
-
+    
+    
+    private int[][] particionesPEF;
+    
+    
     private int totalMemory = 1048576 * 14;
     private int memorySO = 1048576 * 2;
+    
+    public void Init_PEF (int cantidad){
+  
+        int tamParticion = totalMemory / cantidad;
+        particionesPEF=new int [cantidad][4];
+        for (int i=0; i<cantidad;i++){
+            particionesPEF[i][0] = tamParticion * i + memorySO + 1;
+            particionesPEF[i][1] = 0;
+            particionesPEF[i][2] = 0;
+            particionesPEF[i][3] = 0;
+            
+        }
+    }
 
     public boolean Agregar_PEF(String nameProcess, int sizeProcess, int cantidad) {
         int tamParticion = totalMemory / cantidad;
         ProcesoPaginacion procesoTemp = new ProcesoPaginacion(nameProcess, sizeProcess);
-
-        System.out.println("Tamaño Particiones: " + String.valueOf(tamParticion));
+        //System.out.println("Tamaño Particiones: " + String.valueOf(tamParticion));
         if (sizeProcess > (tamParticion)) {
             return false;
         } else {
-            int totalProcesos = procesos.size();
+            /*int totalProcesos = procesos.size();
             int bytesIni = tamParticion * totalProcesos + memorySO + 1;
             int bytesFin = bytesIni + sizeProcess;
             procesoTemp.setByteAddress1(bytesIni);
-            procesoTemp.setByteAddress2(bytesFin);
-            if (bytesFin > totalMemory + memorySO) {
+            procesoTemp.setByteAddress2(bytesFin);*/
+            int flag=0;
+            for (int i=0; i<cantidad; i++){
+                if (particionesPEF[i][3] == 0){
+                    int bytesIni = particionesPEF[i][0];
+                    int bytesFin = bytesIni + sizeProcess;
+                    procesoTemp.setByteAddress1(bytesIni);
+                    procesoTemp.setByteAddress2(bytesFin);
+                    procesoTemp.setIndice(i);
+                    procesos.add(procesoTemp);
+                    flag=1;
+                    particionesPEF[i][3]=1;
+                    break;
+                }    
+            }
+            if (flag==0) {
                 return false;
             } else {
-                procesos.add(procesoTemp);
                 return true;
             }
         }
@@ -53,6 +82,7 @@ public class Paginacion {
                     int bytesFin = bytesIni + sizeProcess;
                     procesoTemp.setByteAddress1(bytesIni);
                     procesoTemp.setByteAddress2(bytesFin);
+                    procesoTemp.setIndice(i);
                     particionesPEV[i][3] = 1;
                     procesos.add(procesoTemp);
                     flag = 1;
@@ -82,6 +112,7 @@ public class Paginacion {
                     int bytesFin = bytesIni + sizeProcess;
                     procesoTemp.setByteAddress1(bytesIni);
                     procesoTemp.setByteAddress2(bytesFin);
+                    procesoTemp.setIndice(indiceMax);
                     particionesPEV[indiceMax][3] = 1;
                     procesos.add(procesoTemp);
                 }
@@ -91,6 +122,7 @@ public class Paginacion {
                     int bytesFin = bytesIni + sizeProcess;
                     procesoTemp.setByteAddress1(bytesIni);
                     procesoTemp.setByteAddress2(bytesFin);
+                    procesoTemp.setIndice(indiceMin);
                     particionesPEV[indiceMin][3] = 1;
                     procesos.add(procesoTemp);
                 }
@@ -162,6 +194,19 @@ public class Paginacion {
         particionesPEV[3][3] = 0;
         particionesPEV[4][3] = 0;
         particionesPEV[5][3] = 0;
+    }
+    
+    public void quitPEV (int indice){
+        //System.out.println("Cerrando el Proceso: "+indice);
+        int indiceMatriz = procesos.get(indice).getIndice();
+        procesos.remove(indice);
+        particionesPEV[indiceMatriz][3]=0;
+    }
+        public void quitPEF (int indice){
+        //System.out.println("Cerrando el Proceso: "+indice);
+        int indiceMatriz = procesos.get(indice).getIndice();
+        procesos.remove(indice);
+        particionesPEF[indiceMatriz][3]=0;
     }
 
 }
