@@ -29,6 +29,7 @@ public class ControladorParticion implements ActionListener {
         this.modelPaginacion = modelPaginacion;
         this.segmentacion = new Segmentacion();
         this.view.IniciarProceso.addActionListener(this);
+        this.view.CancelarProceso.addActionListener(this);
         this.view.IniciarModelo.addActionListener(this);
         this.view.DetenerModelo.addActionListener(this);
     }
@@ -37,7 +38,6 @@ public class ControladorParticion implements ActionListener {
         view.setTitle("Asignación de Memoria");
         view.setLocationRelativeTo(null);
         view.DetenerModelo.setEnabled(false);
-        view.CancelarProceso.setEnabled(false);
         view.IniciarProceso.setEnabled(false);
         view.CancelarProceso.setEnabled(false);
         segmentacion.iniciar();
@@ -46,12 +46,14 @@ public class ControladorParticion implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton source = (JButton) e.getSource();
+        int tab = view.jTabbedPane2.getSelectedIndex();
         //Rutina que Realiza el Precargue de Procesos
         if (source.getText() == "INICIAR") {
             view.jTabbedPane2.setEnabled(false);
             view.IniciarModelo.setEnabled(false);
             view.DetenerModelo.setEnabled(true);
             view.IniciarProceso.setEnabled(true);
+            view.CancelarProceso.setEnabled(true);
             view.MejorAjuste.setEnabled(false);
             view.PeorAjuste.setEnabled(false);
             view.PrimerAjuste.setEnabled(false);
@@ -62,6 +64,7 @@ public class ControladorParticion implements ActionListener {
             view.IniciarModelo.setEnabled(true);
             view.DetenerModelo.setEnabled(false);
             view.IniciarProceso.setEnabled(false);
+            view.CancelarProceso.setEnabled(false);
             view.MejorAjuste.setEnabled(true);
             view.PeorAjuste.setEnabled(true);
             view.PrimerAjuste.setEnabled(true);
@@ -70,15 +73,35 @@ public class ControladorParticion implements ActionListener {
             modelPaginacion.limpiar();
             if (view.jTabbedPane2.getSelectedIndex() != 3 || view.jTabbedPane2.getSelectedIndex() != 4) {
                // modelPaginacion.limpiar();
-            } else if (view.jTabbedPane2.getSelectedIndex() == 3) {
+            } 
+            if (view.jTabbedPane2.getSelectedIndex() == 3) {
                 segmentacion.limpiarProcesos();
+            }
+        }
+        if (source.getText() == "Cancelar Proceso") {
+            int index2 = view.jList2.getSelectedIndex();
+            switch (tab) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    Proceso procesoSeg = (Proceso) ListaProcesosAct.getElementAt(index2);
+                    segmentacion.CerrarProceso(procesoSeg);
+                    ListaProcesosAct.remove(index2);
+                    dibujarMemoria();
+                    break;
+                case 4:
+                    break;
             }
         }
         if (source.getText() == "Elegir Proceso") {
             //SE AGREGA EL PROCESO SELECCIONADO
             int index = view.jList1.getSelectedIndex();
             
-            int tab = view.jTabbedPane2.getSelectedIndex();
+            
             String ajuste = "";
             boolean flag;
 
@@ -131,6 +154,14 @@ public class ControladorParticion implements ActionListener {
                 case 3:
                     System.out.println("Proceso de Segmentación");
                     Proceso procesoSeg = (Proceso) ListaProcesos.getElementAt(index);
+                    if (view.MejorAjuste.isSelected()) {
+                        ajuste = "MEJOR_AJUSTE";
+                    } else if (view.PrimerAjuste.isSelected()) {
+                        ajuste = "PRIMER_AJUSTE";
+                    } else if (view.PeorAjuste.isSelected()) {
+                        ajuste = "PEOR_AJUSTE";
+                    }
+                    segmentacion.setAjuste(ajuste);
                     Proceso procesoEnMemoria = segmentacion.agregarProceso(procesoSeg);
                     if (procesoEnMemoria.getIdProc() > 0) {
                         cargarActivosSeg();
@@ -144,13 +175,19 @@ public class ControladorParticion implements ActionListener {
             }
         }
     }
+    
+    
 
-    public void cargarProcesos() {
+public void cargarProcesos() {
         view.jList1.setModel(ListaProcesos);
         ListaProcesos.clear();
         if (view.jTabbedPane2.getSelectedIndex() == 3) {
             ListaProcesos.addElement(new Proceso("Proceso_1", 1048576, 1048576, 1048576, 0));
-            ListaProcesos.addElement(new Proceso("Proceso_2", 1048576, 1048576, 1048576, 0));
+            ListaProcesos.addElement(new Proceso("Proceso_2", 1048576/2, 1048576/2, 1048576/2, 0));
+            ListaProcesos.addElement(new Proceso("Proceso_3", 1048576/3, 1048576/3, 1048576/3, 0));
+            ListaProcesos.addElement(new Proceso("Proceso_4", 1048576/4, 1048576/4, 1048576/4, 0));
+            ListaProcesos.addElement(new Proceso("Proceso_5", 1048576/4, 1048576/3, 1048576/5, 0));
+            ListaProcesos.addElement(new Proceso("Proceso_6", 1048576/2, 1048576/4, 1048576/3, 0));
         } else {
             ListaProcesos.addElement(new ProcesoPaginacion("Word", 1048576));
             ListaProcesos.addElement(new ProcesoPaginacion("Excel", 1048576 * 2));
@@ -174,9 +211,9 @@ public class ControladorParticion implements ActionListener {
     public void cargarActivosSeg() {
         view.jList2.setModel(ListaProcesosAct);
         ListaProcesosAct.clear();
-        for (Proceso item : segmentacion.getProcesos()) {
+        segmentacion.getProcesos().forEach(item -> {
             ListaProcesosAct.addElement(item);
-        }
+        });
         dibujarMemoria();
     }
 
