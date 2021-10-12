@@ -50,23 +50,29 @@ public class ControladorParticion implements ActionListener {
         int tab = view.jTabbedPane2.getSelectedIndex();
         //Rutina que Realiza el Precargue de Procesos
         if (source.getText() == "INICIAR") {
-            view.jTabbedPane2.setEnabled(false);
-            view.IniciarModelo.setEnabled(false);
-            view.DetenerModelo.setEnabled(true);
-            view.IniciarProceso.setEnabled(true);
-            view.CancelarProceso.setEnabled(true);
-            view.MejorAjuste.setEnabled(false);
-            view.PeorAjuste.setEnabled(false);
-            view.PrimerAjuste.setEnabled(false);
-            
-            if (view.PEF_npar.getText()!="" && tab==0){
-                int cantidad = Integer.parseInt(view.PEF_npar.getText());
-                modelPaginacion.Init_PEF(cantidad);
-                
+            if (view.PEF_npar.getText().isEmpty() && tab==0){    
+                JOptionPane.showMessageDialog(null, "Debe ingresar la Cantidad de Particiones.");
+            }else{
+                if(tab==1 && !view.MejorAjuste.isSelected() && !view.PrimerAjuste.isSelected() 
+                        && !view.PeorAjuste.isSelected()){
+                    JOptionPane.showMessageDialog(null, "Debe seleccionar alguno de los ajustes.");
+                    
+                }else{
+                    view.jTabbedPane2.setEnabled(false);
+                    view.IniciarModelo.setEnabled(false);
+                    view.DetenerModelo.setEnabled(true);
+                    view.IniciarProceso.setEnabled(true);
+                    view.CancelarProceso.setEnabled(true);
+                    view.MejorAjuste.setEnabled(false);
+                    view.PeorAjuste.setEnabled(false);
+                    view.PrimerAjuste.setEnabled(false);
+                    cargarProcesos();
+                    if (tab==0){
+                        int cantidad = Integer.parseInt(view.PEF_npar.getText());
+                        modelPaginacion.Init_PEF(cantidad);   
+                    }
+                }
             }
-            
-            
-            cargarProcesos();
         }
         if (source.getText() == "DETENER") {
             System.out.println("Entra en Detener");
