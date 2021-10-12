@@ -173,35 +173,42 @@ public class Segmentacion {
             
             for(int item : secciones)
             {
-                int ind1 = 0;
+                int ind1 = -1;
                 for (int i = 0; i < vacios.size(); i++) {
                     int dif = 0 ;
                     int dif2 = 0;
                     switch (item) {
                         case 1:
                             dif=(vacios.get(i))[3] - procTran.getTamCode();
-                            dif2=(vacios.get(ind1))[3] - procTran.getTamCode();
+                            if(ind1>=0){
+                            dif2=(vacios.get(ind1))[3] - procTran.getTamCode();}
+                            else{dif2=procTran.getTamCode();}
                             break;
                         case 2:
                             dif=(vacios.get(i))[3] - procTran.getTamData();
-                            dif2=(vacios.get(ind1))[3] - procTran.getTamCode();
+                            if(ind1>=0){
+                            dif2=(vacios.get(ind1))[3] - procTran.getTamCode();}
+                            else{dif2=procTran.getTamCode();}
                             break;
                         case 3:
                             dif=(vacios.get(i))[3] - procTran.getTamPila();
-                            dif2=(vacios.get(ind1))[3] - procTran.getTamCode();
+                            if(ind1>=0){
+                            dif2=(vacios.get(ind1))[3] - procTran.getTamCode();}
+                            else{dif2=procTran.getTamCode();}
                             break;
                         default:
                             break;
                     }
                     
                     if ((vacios.get(i))[0] == item) {
-                        if (ind1 == 0) {
+                        if (ind1 == -1 && dif >= 0) {
                             ind1 = i;
                         } else if (dif >= 0 && dif < dif2) {
                             ind1 = i;
                         }
                     }
                 }
+                if(ind1==-1){procTran.setIdProc(0); return procTran;}
                 switch(item){
                     case 1:
                         baseCodigoProceso = (vacios.get(ind1))[1];
@@ -244,6 +251,74 @@ public class Segmentacion {
             
         }
         else if (ajuste == "PRIMER_AJUSTE") {
+            
+            for(int item : secciones)
+            {
+                int ind1 = -1;
+                for (int i = 0; i < vacios.size(); i++) {
+                    int dif = 0 ;
+                    switch (item) {
+                        case 1:
+                            dif=(vacios.get(i))[3] - procTran.getTamCode();
+                            break;
+                        case 2:
+                            dif=(vacios.get(i))[3] - procTran.getTamData();
+                            break;
+                        case 3:
+                            dif=(vacios.get(i))[3] - procTran.getTamPila();
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    if ((vacios.get(i))[0] == item) {
+                        if (ind1 == -1 && dif >= 0) {
+                            ind1 = i;
+                        } 
+                    }
+                }
+                if(ind1==-1){procTran.setIdProc(0); return procTran;}
+                switch(item){
+                    case 1:
+                        baseCodigoProceso = (vacios.get(ind1))[1];
+                        limiteCodigoProceso = (vacios.get(ind1))[1] + proceso.getTamCode();
+                        if(limiteCodigoProceso > limiteCodigo) {procTran.setIdProc(0); return procTran;}
+                        if((vacios.get(ind1))[3] - procTran.getTamCode()>0)
+                        {
+                            vacios.add( new Integer[]{1,(limiteCodigoProceso+1),(vacios.get(ind1))[2], ((vacios.get(ind1))[2]- (limiteCodigoProceso+1) )} );
+                        }
+                        vacios.remove(ind1);
+                        break;
+                    case 2:
+                        baseDataProceso = (vacios.get(ind1))[1];
+                        limiteDataProceso = (vacios.get(ind1))[1] + proceso.getTamData();
+                        if(limiteDataProceso > limiteDatos) {procTran.setIdProc(0); return procTran;}
+                        if((vacios.get(ind1))[3] - procTran.getTamData()>0)
+                        {
+                            vacios.add( new Integer[]{2,(limiteDataProceso+1),(vacios.get(ind1))[2], ((vacios.get(ind1))[2]- (limiteDataProceso+1) )} );
+                        }
+                        vacios.remove(ind1);
+                        break;
+                    case 3:
+                        basePilaProceso = (vacios.get(ind1))[2] - proceso.getTamPila();
+                        limitePilaProceso = (vacios.get(ind1))[2];
+                        if(basePilaProceso < basePila) {procTran.setIdProc(0); return procTran;}
+                        if((vacios.get(ind1))[3] - procTran.getTamCode()>0)
+                        {
+                            vacios.add( new Integer[]{3,(vacios.get(ind1))[1] ,(basePilaProceso-1), ((basePilaProceso-1) - (vacios.get(ind1))[1] )} );
+                        }
+                        vacios.remove(ind1);
+                        break;
+                }
+                
+            }
+            
+            procesos.add(procTran);
+            segmentos.add( new Integer[]{1,key,baseCodigoProceso,limiteCodigoProceso} );
+            segmentos.add( new Integer[]{2,key,baseDataProceso,limiteDataProceso} );
+            segmentos.add( new Integer[]{3,key,basePilaProceso,limitePilaProceso} );
+        }
+        else if (ajuste == "PEOR_AJUSTE") {
             baseCodigoProceso = (int)baseCodigo;
             limiteCodigoProceso = (int)baseCodigo + proceso.getTamCode();
             baseDataProceso = (int)baseDatos;
@@ -263,10 +338,6 @@ public class Segmentacion {
             this.baseCodigo = limiteCodigoProceso;
             this.baseDatos = limiteDataProceso;
             this.limitePila = basePilaProceso;
-            
-        }
-        else if (ajuste == "PEOR_AJUSTE") {
-        
         }
         
         Hilos hilo = new Hilos(procTran.getNombre());
@@ -276,15 +347,14 @@ public class Segmentacion {
     
     public void CerrarProceso(Proceso proceso){
         int[] secciones = {1,2,3};
-        procesos.remove(proceso);
-        for(int item : secciones){
-        for(int i = 0; i<segmentos.size(); i++){
-            if(proceso.getIdProc()==(segmentos.get(i))[1])
-            {
-                vacios.add( new Integer[]{(segmentos.get(i))[0],(segmentos.get(i))[2] ,(segmentos.get(i))[3], ((segmentos.get(i))[3] - (segmentos.get(i))[2])} );
-                segmentos.remove(i);
+//        procesos.remove(proceso);
+        for (int item : secciones) {
+            for (int i = 0; i < segmentos.size(); i++) {
+                if (proceso.getIdProc() == (segmentos.get(i))[1]) {
+                    vacios.add(new Integer[]{(segmentos.get(i))[0], (segmentos.get(i))[2], (segmentos.get(i))[3], ((segmentos.get(i))[3] - (segmentos.get(i))[2])});
+                    segmentos.remove(i);
+                }
             }
-        }
         }
     }
     
