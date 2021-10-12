@@ -124,6 +124,8 @@ public class ControladorParticion implements ActionListener {
                     dibujarMemoria();
                     break;
                 case 4:
+                    modelPaginacion.removeProcessPag(index2);
+                    cargarActivosPag();
                     break;
             }
         }

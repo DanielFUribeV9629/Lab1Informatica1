@@ -282,6 +282,29 @@ public class Paginacion {
         return page_frames;
     }
 
+    public void removeProcessPag(int indice) {
+        ProcesoPaginacion selected_process=procesos.get(indice);
+        String process_name = selected_process.getName();
+        System.out.println("Cierra paginas: " + process_name);
+        ArrayList<ProcesoPaginacion> process_pages = new ArrayList<ProcesoPaginacion>();
+        // remove all pages from list
+        for(ProcesoPaginacion page : procesos ){
+            if(page.getName() == process_name){
+                process_pages.add(page);
+            }
+        }
+        procesos.removeAll(process_pages);
+        pages_taken -= process_pages.size();
+        // remove all pages from stack
+        for(int x=0; x < page_frames.length; x++) {
+            if (page_frames[x][1] == process_name) {
+                page_frames[x][1] = "0";
+                page_frames[x][0] = "0";
+            }
+        }
+        //show_stats();
+    }
+
     public boolean Agregar_PPAG(String nameProcess, int sizeProcess, int size_page) {
         int page_size = size_page * 1024;
         int frame_number = 0;
@@ -309,7 +332,6 @@ public class Paginacion {
                         page_frames[x][1] = name_process;
                         page_frames[x][0] = "1";
                         frame_number = x;
-                        System.out.println(x);
                         break;
                     }
                 }
