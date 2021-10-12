@@ -50,14 +50,13 @@ public class ControladorParticion implements ActionListener {
         int tab = view.jTabbedPane2.getSelectedIndex();
         //Rutina que Realiza el Precargue de Procesos
         if (source.getText() == "INICIAR") {
-            if (view.PEF_npar.getText().isEmpty() && tab==0){    
+            if (view.PEF_npar.getText().isEmpty() && tab == 0) {
                 JOptionPane.showMessageDialog(null, "Debe ingresar la Cantidad de Particiones.");
-            }else{
-                if(tab==1 && !view.MejorAjuste.isSelected() && !view.PrimerAjuste.isSelected() 
-                        && !view.PeorAjuste.isSelected()){
+            } else if (tab == 1 || tab == 2) {
+                if (!view.MejorAjuste.isSelected() && !view.PrimerAjuste.isSelected()
+                        && !view.PeorAjuste.isSelected()) {
                     JOptionPane.showMessageDialog(null, "Debe seleccionar alguno de los ajustes.");
-                    
-                }else{
+                } else {
                     view.jTabbedPane2.setEnabled(false);
                     view.IniciarModelo.setEnabled(false);
                     view.DetenerModelo.setEnabled(true);
@@ -67,9 +66,9 @@ public class ControladorParticion implements ActionListener {
                     view.PeorAjuste.setEnabled(false);
                     view.PrimerAjuste.setEnabled(false);
                     cargarProcesos();
-                    if (tab==0){
+                    if (tab == 0) {
                         int cantidad = Integer.parseInt(view.PEF_npar.getText());
-                        modelPaginacion.Init_PEF(cantidad);   
+                        modelPaginacion.Init_PEF(cantidad);
                     }
                 }
             }
@@ -111,6 +110,8 @@ public class ControladorParticion implements ActionListener {
                     cargarActivos();
                     break;
                 case 2:
+                    modelPaginacion.quitPD(index2);
+                    cargarActivos();
                     break;
                 case 3:
                     Proceso procesoSeg = (Proceso) ListaProcesosAct.getElementAt(index2);
@@ -320,15 +321,7 @@ public void cargarProcesos() {
             lapiz.fillRect(0, (int) bitsTopixel(14680069, canvaH), canvaW, 2);
             lapiz.fillRect(0, (int) bitsTopixel(15728646, canvaH), canvaW, 2);
         } else if (view.jTabbedPane2.getSelectedIndex() == 2) {
-            lapiz.fillRect(0, (int) bitsTopixel(2097153, canvaH), canvaW, 2);
-            if (view.PrimerAjuste.isSelected()) {
-                int totProc = 0;
-                for (int i = 0; i < modelPaginacion.getArray().size(); i++) {
-                    totProc = totProc + modelPaginacion.getArray().get(i).getSize();
-                    lapiz.fillRect(0, (int) bitsTopixel(totProc + 2097153, canvaH), canvaW, 2);
-                }
-
-            }
+            lapiz.fillRect(0, (int) bitsTopixel(2097153, canvaH), canvaW, 2);            
         }
         lienzo.drawImage(dobleBuffer, 0, 0, papel);
     }
