@@ -51,10 +51,14 @@ public class ControladorParticion implements ActionListener {
         //Rutina que Realiza el Precargue de Procesos
         if (source.getText() == "INICIAR") {
             if (view.PEF_npar.getText().isEmpty() && tab == 0) {
+                System.out.println("entreeeeeeee");
                 JOptionPane.showMessageDialog(null, "Debe ingresar la Cantidad de Particiones.");
-            } else if (tab == 1 || tab == 2) {
-                if (!view.MejorAjuste.isSelected() && !view.PrimerAjuste.isSelected()
-                        && !view.PeorAjuste.isSelected()) {
+            }else{
+                if(tab==1 && !view.MejorAjuste.isSelected() && !view.PrimerAjuste.isSelected() 
+                        && !view.PeorAjuste.isSelected()){
+                    JOptionPane.showMessageDialog(null, "Debe seleccionar alguno de los ajustes.");
+                }else if (tab==2 && !view.MejorAjuste.isSelected() && !view.PrimerAjuste.isSelected() 
+                        && !view.PeorAjuste.isSelected()){
                     JOptionPane.showMessageDialog(null, "Debe seleccionar alguno de los ajustes.");
                 } else {
                     view.jTabbedPane2.setEnabled(false);
