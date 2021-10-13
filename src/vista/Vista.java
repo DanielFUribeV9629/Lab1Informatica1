@@ -12,6 +12,7 @@ public class Vista extends javax.swing.JFrame {
     private void initComponents() {
 
         Ajuste = new javax.swing.ButtonGroup();
+        Compactacion = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         IniciarProceso = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -34,8 +35,8 @@ public class Vista extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
+        CompactacionSi = new javax.swing.JRadioButton();
+        CompactacionNo = new javax.swing.JRadioButton();
         jPanel8 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
@@ -198,31 +199,43 @@ public class Vista extends javax.swing.JFrame {
         jLabel3.setText("Particiones Dinámicas");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jLabel9.setText("Asignación de memoria de acuerdo ");
+        Compactacion.add(CompactacionSi);
+        CompactacionSi.setSelected(true);
+        CompactacionSi.setText("Con Compacatación");
+        CompactacionSi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CompactacionSiActionPerformed(evt);
+            }
+        });
 
-        jLabel20.setText("al tamaño requerido por el proceso.");
+        Compactacion.add(CompactacionNo);
+        CompactacionNo.setText("Sin Compactación");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel20))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CompactacionSi)
+                            .addComponent(CompactacionNo))))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(CompactacionSi)
+                .addGap(18, 18, 18)
+                .addComponent(CompactacionNo)
                 .addContainerGap(56, Short.MAX_VALUE))
         );
 
@@ -512,6 +525,10 @@ public class Vista extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_PEF_nparActionPerformed
 
+    private void CompactacionSiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CompactacionSiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CompactacionSiActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -547,6 +564,9 @@ public class Vista extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup Ajuste;
     public javax.swing.JButton CancelarProceso;
+    private javax.swing.ButtonGroup Compactacion;
+    public javax.swing.JRadioButton CompactacionNo;
+    public javax.swing.JRadioButton CompactacionSi;
     public javax.swing.JButton DetenerModelo;
     public javax.swing.JButton IniciarModelo;
     public javax.swing.JButton IniciarProceso;
@@ -565,14 +585,12 @@ public class Vista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     public javax.swing.JList<String> jList1;
     public javax.swing.JList<String> jList2;
     private javax.swing.JPanel jPanel1;

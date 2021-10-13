@@ -136,7 +136,91 @@ public class Paginacion {
         }
     }
 
-    public boolean Agregar_PD(String nameProcess, int sizeProcess, String ajuste) {
+    public boolean Agregar_PD_compacSi(String nameProcess, int sizeProcess, String ajuste) {
+        ProcesoPaginacion procesoTemp = new ProcesoPaginacion(nameProcess, sizeProcess);
+        int totalProcesos = 0;
+        int bytesIni, bytesFin = 0;
+
+        if (ajuste == "PRIMER_AJUSTE") {
+            for (int i = 0; i < procesos.size(); i++) {
+                totalProcesos = totalProcesos + procesos.get(i).getSize();
+            }
+            int availableMemory = totalMemory - totalProcesos;
+
+            if (availableMemory < sizeProcess) {
+                return false;
+            } else {
+                if (procesos.size() == 0) {
+                    primerElemento(procesoTemp, sizeProcess);
+                } else {
+                    bytesIni = memorySO + totalProcesos;
+                    bytesFin = bytesIni + sizeProcess;
+                    procesoTemp.setByteAddress1(bytesIni);
+                    procesoTemp.setByteAddress2(bytesFin);
+                }
+                if (bytesFin > totalMemory + memorySO) {
+                    return false;
+                } else {
+                    System.out.println("Agregue proceso");
+                    procesos.add(procesoTemp);
+                    return true;
+                }
+            }
+        } else if (ajuste == "PEOR_AJUSTE") {
+            for (int i = 0; i < procesos.size(); i++) {
+                totalProcesos = totalProcesos + procesos.get(i).getSize();
+            }
+            int availableMemory = totalMemory - totalProcesos;
+
+            if (availableMemory < sizeProcess) {
+                return false;
+            } else {
+                if (procesos.size() == 0) {
+                    primerElemento(procesoTemp, sizeProcess);
+                } else {
+                    bytesIni = memorySO + totalProcesos;
+                    bytesFin = bytesIni + sizeProcess;
+                    procesoTemp.setByteAddress1(bytesIni);
+                    procesoTemp.setByteAddress2(bytesFin);
+                }
+                if (bytesFin > totalMemory + memorySO) {
+                    return false;
+                } else {
+                    System.out.println("Agregue proceso");
+                    procesos.add(procesoTemp);
+                    return true;
+                }
+            }
+        } else if (ajuste == "MEJOR_AJUSTE") {
+            for (int i = 0; i < procesos.size(); i++) {
+                totalProcesos = totalProcesos + procesos.get(i).getSize();
+            }
+            int availableMemory = totalMemory - totalProcesos;
+
+            if (availableMemory < sizeProcess) {
+                return false;
+            } else {
+                if (procesos.size() == 0) {
+                    primerElemento(procesoTemp, sizeProcess);
+                } else {
+                    bytesIni = memorySO + totalProcesos;
+                    bytesFin = bytesIni + sizeProcess;
+                    procesoTemp.setByteAddress1(bytesIni);
+                    procesoTemp.setByteAddress2(bytesFin);
+                }
+                if (bytesFin > totalMemory + memorySO) {
+                    return false;
+                } else {
+                    System.out.println("Agregue proceso");
+                    procesos.add(procesoTemp);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean Agregar_PD_compacNo(String nameProcess, int sizeProcess, String ajuste) {
         ProcesoPaginacion procesoTemp = new ProcesoPaginacion(nameProcess, sizeProcess);
         int totalProcesos = 0;
         int bytesIni, bytesFin = 0;
@@ -255,21 +339,36 @@ public class Paginacion {
         particionesPEF[indiceMatriz][3] = 0;
     }
 
-    public void quitPD(int indice) {
+    public void quitPD_compac(int indice) {
         int byteIni, byteIniAnt, byteFin, cuenta = 0;
-        for (int i = indice; i < procesos.size() - 1; i++) {
-
-            if (cuenta == 0) {
-                byteIniAnt = procesos.get(i - 1).getByteAddress2();
-            } else {
-                byteIniAnt = procesos.get(i).getByteAddress2();
+        if (indice == 0) {
+            for (int i = indice; i < procesos.size()-1; i++) {
+                if (cuenta == 0) {
+                    byteIniAnt = procesos.get(i).getByteAddress1();
+                } else {
+                    byteIniAnt = procesos.get(i).getByteAddress2();
+                }
+                byteIni = byteIniAnt;
+                byteFin = byteIni + procesos.get(i + 1).getSize();
+                procesos.get(i + 1).setByteAddress1(byteIni);
+                procesos.get(i + 1).setByteAddress2(byteFin);
+                cuenta++;
             }
+        } else {
+            for (int i = indice; i < procesos.size() - 1; i++) {
 
-            byteIni = byteIniAnt;
-            byteFin = byteIni + procesos.get(i + 1).getSize();
-            procesos.get(i + 1).setByteAddress1(byteIni);
-            procesos.get(i + 1).setByteAddress2(byteFin);
-            cuenta++;
+                if (cuenta == 0) {
+                    byteIniAnt = procesos.get(i - 1).getByteAddress2();
+                } else {
+                    byteIniAnt = procesos.get(i).getByteAddress2();
+                }
+
+                byteIni = byteIniAnt;
+                byteFin = byteIni + procesos.get(i + 1).getSize();
+                procesos.get(i + 1).setByteAddress1(byteIni);
+                procesos.get(i + 1).setByteAddress2(byteFin);
+                cuenta++;
+            }
         }
         procesos.remove(indice);
     }
@@ -283,20 +382,20 @@ public class Paginacion {
     }
 
     public void removeProcessPag(int indice) {
-        ProcesoPaginacion selected_process=procesos.get(indice);
+        ProcesoPaginacion selected_process = procesos.get(indice);
         String process_name = selected_process.getName();
         System.out.println("Cierra paginas: " + process_name);
         ArrayList<ProcesoPaginacion> process_pages = new ArrayList<ProcesoPaginacion>();
         // remove all pages from list
-        for(ProcesoPaginacion page : procesos ){
-            if(page.getName() == process_name){
+        for (ProcesoPaginacion page : procesos) {
+            if (page.getName() == process_name) {
                 process_pages.add(page);
             }
         }
         procesos.removeAll(process_pages);
         pages_taken -= process_pages.size();
         // remove all pages from stack
-        for(int x=0; x < page_frames.length; x++) {
+        for (int x = 0; x < page_frames.length; x++) {
             if (page_frames[x][1] == process_name) {
                 page_frames[x][1] = "0";
                 page_frames[x][0] = "0";

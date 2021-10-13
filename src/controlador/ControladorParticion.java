@@ -114,7 +114,7 @@ public class ControladorParticion implements ActionListener {
                     cargarActivos();
                     break;
                 case 2:
-                    modelPaginacion.quitPD(index2);
+                    modelPaginacion.quitPD_compac(index2);
                     cargarActivos();
                     break;
                 case 3:
@@ -166,7 +166,15 @@ public class ControladorParticion implements ActionListener {
                     break;
                 case 2:
                     System.out.println("Proceso de PD");
+                    boolean compactacion = true;
                     ProcesoPaginacion proceso2 = (ProcesoPaginacion) ListaProcesos.getElementAt(index);
+                    
+                    if (view.CompactacionSi.isSelected()){
+                        compactacion =true;
+                    }else if (view.CompactacionNo.isSelected()){
+                        compactacion = false;
+                    }
+                    ///---------------
                     if (view.MejorAjuste.isSelected()) {
                         ajuste = "MEJOR_AJUSTE";
                     } else if (view.PrimerAjuste.isSelected()) {
@@ -174,7 +182,11 @@ public class ControladorParticion implements ActionListener {
                     } else if (view.PeorAjuste.isSelected()) {
                         ajuste = "PEOR_AJUSTE";
                     }
-                    flag = modelPaginacion.Agregar_PD(proceso2.getName(), proceso2.getSize(), ajuste);
+                    if (compactacion){
+                        flag = modelPaginacion.Agregar_PD_compacSi(proceso2.getName(), proceso2.getSize(), ajuste);
+                    }else{
+                        flag = modelPaginacion.Agregar_PD_compacNo(proceso2.getName(), proceso2.getSize(), ajuste);
+                    }                                             
                     if (flag == false) {
                         JOptionPane.showMessageDialog(null, "Memoria Insuficiente");
                     } else {
